@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = MainModClass.MODID, name = MainModClass.NAME, version = MainModClass.VERSION,
-dependencies = "required:cubicchunks@[0.0.1213.0,)")
+dependencies = "required:cubicchunks@[0.0.1244.0,)")
 public class MainModClass
 {
     public static final String MODID = "modid";

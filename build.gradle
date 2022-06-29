@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.27'
-        if (usingMixins.toBoolean()) {
+        if (true) {
             classpath 'org.spongepowered:mixingradle:0.7.+'
             classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
         }
@@ -15,6 +15,7 @@ buildscript {
         
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 if (usingMixins.toBoolean()) {
@@ -106,10 +107,21 @@ dependencies {
     }
 }
 
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
 if (usingMixins.toBoolean()) {
     mixin {
-        add sourceSets.main, 'mixins."+modid+".refmap.json'
-        config 'mixins."+modid+".json'
+        add sourceSets.main, 'mixins.' + modid + '.refmap.json'
+        config 'mixins.' + modid + '.json'
+    }
+} else {
+    compileJava {
+        exclude '**/core/MixinLoader.java'
+        exclude '**/core/mixins/**'
     }
 }
 
@@ -129,6 +141,10 @@ jar {
             attributes["FMLCorePluginContainsFMLMod"] = true
             attributes["FMLCorePlugin"] = group+".core.MixinLoader"
         }
+    }
+
+    if (!usingMixins.toBoolean()) {
+        exclude("**/mixins.*.json")
     }
 }
 
