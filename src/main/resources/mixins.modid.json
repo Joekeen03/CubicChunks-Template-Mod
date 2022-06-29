@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "com.authorname.modid",
+  "refmap": "mixins.modid.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.7.10",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "conformVisibility": true
+  },
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "server": [
+  ]
+}

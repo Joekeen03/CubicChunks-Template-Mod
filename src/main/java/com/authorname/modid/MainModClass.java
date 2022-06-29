@@ -12,27 +12,30 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = MainModClass.MODID, name = MainModClass.NAME, version = MainModClass.VERSION,
 dependencies = "required:cubicchunks@[0.0.1213.0,)")
 public class MainModClass
 {
-    public static final String MODID = "jkworldgen";
-    public static final String NAME = "JK WorldGen";
-    public static final String VERSION = "1.0";
+    public static final String MODID = "modid";
+    public static final String NAME = "Example CC Mod";
+    public static final String VERSION = "0.0.1";
+    public static final String packageName = "com.authorname.modid";
 
     private static Logger logger;
 
     @Mod.Instance
     public static MainModClass instance;
 
-    @SidedProxy (clientSide="ClientProxy", serverSide="CommonProxy")
+    @SidedProxy (clientSide=packageName+".proxy.ClientProxy", serverSide=packageName+".proxy.CommonProxy")
     public static CommonProxy proxy;
 
     public MainModClass()
     {
         MinecraftForge.EVENT_BUS.register(this);
+        logger = LogManager.getLogger(NAME);
     }
 
     @EventHandler
@@ -79,5 +82,9 @@ public class MainModClass
 
     public static void fatal(String message) {
         logger.fatal(message);
+    }
+
+    public static void warn(String message) {
+        logger.warn(message);
     }
 }
