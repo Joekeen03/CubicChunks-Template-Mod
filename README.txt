@@ -26,3 +26,4 @@ E.g.:
 
 Notes:
 * For running the project, you need to use the runClient configuration (the one with a window icon).
+* If you want mixins enabled, you need to use the Mixins branch.
