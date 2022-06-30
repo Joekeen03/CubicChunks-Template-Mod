@@ -6,10 +6,8 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.27'
-        if (true) {
-            classpath 'org.spongepowered:mixingradle:0.7.+'
-            classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
-        }
+        classpath 'org.spongepowered:mixingradle:0.7.+'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
     }
 }
 
@@ -24,10 +22,8 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-if (usingMixins.toBoolean()) {
-    apply plugin: 'org.spongepowered.mixin'
-    apply plugin: 'com.github.johnrengelman.shadow'
-}
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'com.github.johnrengelman.shadow'
 version = modVersion
 group = mainPackageName
 
@@ -107,34 +103,19 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    if (usingMixins.toBoolean()) {
-        shadow('org.spongepowered:mixin:0.8')
-        annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    }
+    shadow('org.spongepowered:mixin:0.8')
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 idea {
     module {
         inheritOutputDirs = true
-        if (!usingMixins.toBoolean()) {
-            project.logger.lifecycle("Excluding mixinloader from Intellij.")
-//            excludeDirs += file('src/main/java/com/authorname/modid/core')
-            project.logger.lifecycle(file('src/main/java/com/authorname/modid/core').getAbsolutePath())
-        }
     }
 }
 
-if (usingMixins.toBoolean()) {
-    mixin {
-        add sourceSets.main, 'mixins.' + modid + '.refmap.json'
-        config 'mixins.' + modid + '.json'
-    }
-} else {
-    compileJava {
-        project.logger.lifecycle("Excluding mixinloader in compileJava.")
-        exclude '**/core/MixinLoader.java'
-        exclude '**/core/mixins/**'
-    }
+mixin {
+    add sourceSets.main, 'mixins.' + modid + '.refmap.json'
+    config 'mixins.' + modid + '.json'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime.
@@ -149,14 +130,8 @@ jar {
             "Implementation-Vendor" :"examplemodsareus",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
-        if (usingMixins.toBoolean()) {
-            attributes["FMLCorePluginContainsFMLMod"] = true
-            attributes["FMLCorePlugin"] = group+".core.MixinLoader"
-        }
-    }
-
-    if (!usingMixins.toBoolean()) {
-        exclude("**/mixins.*.json")
+        attributes["FMLCorePluginContainsFMLMod"] = true
+        attributes["FMLCorePlugin"] = group+".core.MixinLoader"
     }
 }
 
