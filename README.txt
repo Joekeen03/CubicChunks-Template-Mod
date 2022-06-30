@@ -15,5 +15,14 @@ E.g.:
     b. Project compiler output: Path to your mod's folder, plus "\out"
         * Should be the full, qualified path, as it would appear in Windows Explorer (or your OS's file explorer)
         * E.g. "D:\Documents\TestMod\out"
+        * You may need to explicitly create the "out" folder.
         * Project compiler output is under Project Settings>Project
-8. Potentially restart your IDE.
+    c. Potentially restart your IDE.
+8. Add the CubicChunks dev-all jar to the run/mods directory
+    * Can't figure out how to avoid needing this.
+    * .jar is currently available at: https://jenkins.daporkchop.net/job/OpenCubicChunks/job/CubicChunks/job/MC_1.12/ under the "Last Successful Artifacts".
+        * Filename's format is: "CubicChunks-1.12-"+versionNumber+"-SNAPSHOT-dev-all.jar"
+    * Again, you may need to explicitly create the run/mods directory.
+
+Notes:
+* For running the project, you need to use the runClient configuration (the one with a window icon).

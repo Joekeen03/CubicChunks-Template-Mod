@@ -12,7 +12,13 @@ buildscript {
         }
     }
 }
-        
+
+//processResources {
+//    project.logger.lifecycle("Excluding mixinloader from processResources.")
+//    exclude '**/core/MixinLoader.java'
+//    exclude '**/core/mixins/**'
+//}
+
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'idea'
@@ -110,6 +116,11 @@ dependencies {
 idea {
     module {
         inheritOutputDirs = true
+        if (!usingMixins.toBoolean()) {
+            project.logger.lifecycle("Excluding mixinloader from Intellij.")
+//            excludeDirs += file('src/main/java/com/authorname/modid/core')
+            project.logger.lifecycle(file('src/main/java/com/authorname/modid/core').getAbsolutePath())
+        }
     }
 }
 
@@ -120,12 +131,13 @@ if (usingMixins.toBoolean()) {
     }
 } else {
     compileJava {
+        project.logger.lifecycle("Excluding mixinloader in compileJava.")
         exclude '**/core/MixinLoader.java'
         exclude '**/core/mixins/**'
     }
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
+// Example for how to get properties into the manifest for reading by the runtime.
 jar {
     manifest {
         attributes([
