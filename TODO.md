@@ -1,0 +1,2 @@
+- Example of optional dependencies, as well as optional mixins (maybe implement the MixinConfig setup I created for my CubicChunksCompatibilityHelper mod)
+- Set up token replacement for mcmod.info and other files (e.g. automatically replacing ${version} with the mod's version number.)

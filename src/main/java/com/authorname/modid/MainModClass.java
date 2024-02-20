@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = MainModClass.MODID, name = MainModClass.NAME, version = MainModClass.VERSION,
-dependencies = "required:cubicchunks@[0.0.1244.0,)")
+dependencies = "required:cubicchunks@[0.0.1244.0,);required:mixinbooter@[8.8,)")
 public class MainModClass
 {
     public static final String MODID = "modid";
@@ -24,7 +24,7 @@ public class MainModClass
     public static final String VERSION = "0.0.1";
     public static final String packageName = "com.authorname.modid";
 
-    private static Logger logger;
+    private static Logger logger = LogManager.getLogger(NAME);
 
     @Mod.Instance
     public static MainModClass instance;
@@ -35,7 +35,6 @@ public class MainModClass
     public MainModClass()
     {
         MinecraftForge.EVENT_BUS.register(this);
-        logger = LogManager.getLogger(NAME);
     }
 
     @EventHandler

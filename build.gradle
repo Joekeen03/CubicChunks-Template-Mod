@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net/' }
@@ -6,32 +8,22 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.27'
-        if (true) {
-            classpath 'org.spongepowered:mixingradle:0.7.+'
-            classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
-        }
+        classpath 'org.spongepowered:mixingradle:0.7.+'
     }
 }
-
-//processResources {
-//    project.logger.lifecycle("Excluding mixinloader from processResources.")
-//    exclude '**/core/MixinLoader.java'
-//    exclude '**/core/mixins/**'
-//}
 
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-if (usingMixins.toBoolean()) {
-    apply plugin: 'org.spongepowered.mixin'
-    apply plugin: 'com.github.johnrengelman.shadow'
-}
+apply plugin: 'org.spongepowered.mixin'
+//apply plugin: 'com.github.johnrengelman.shadow'
+
 version = modVersion
 group = mainPackageName
 
-archivesBaseName = 'testMod[CC]'
+archivesBaseName = 'CubicChunksTemplateMod[CC]'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -52,6 +44,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            jvmArg "-Dfml.coreMods.load="+mainPackageName+".mixin.mixinplugin.EarlyMixinLoader"
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -62,6 +55,7 @@ minecraft {
 
         server {
 
+            jvmArg "-Dfml.coreMods.load="+mainPackageName+".mixin.mixinplugin.EarlyMixinLoader"
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
@@ -77,6 +71,11 @@ repositories {
     maven {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
+    }
+
+    // MixinBooter repository
+    maven {
+        url 'https://maven.cleanroommc.com'
     }
 }
 
@@ -107,62 +106,56 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    if (usingMixins.toBoolean()) {
-        shadow('org.spongepowered:mixin:0.8')
-        annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+//    shadow('org.spongepowered:mixin:0.8')
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    // MixinBooter
+    // Common:
+    annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
+    annotationProcessor 'com.google.guava:guava:32.1.2-jre'
+    annotationProcessor 'com.google.code.gson:gson:2.8.9'
+
+    // ForgeGradle:
+    implementation ('zone.rong:mixinbooter:8.8') {
+        transitive = false
+    }
+    annotationProcessor ('zone.rong:mixinbooter:8.8') {
+        transitive = false
     }
 }
 
 idea {
     module {
         inheritOutputDirs = true
-        if (!usingMixins.toBoolean()) {
-            project.logger.lifecycle("Excluding mixinloader from Intellij.")
-//            excludeDirs += file('src/main/java/com/authorname/modid/core')
-            project.logger.lifecycle(file('src/main/java/com/authorname/modid/core').getAbsolutePath())
-        }
     }
+
 }
 
-if (usingMixins.toBoolean()) {
-    mixin {
-        add sourceSets.main, 'mixins.' + modid + '.refmap.json'
-        config 'mixins.' + modid + '.json'
-    }
-} else {
-    compileJava {
-        project.logger.lifecycle("Excluding mixinloader in compileJava.")
-        exclude '**/core/MixinLoader.java'
-        exclude '**/core/mixins/**'
-    }
+mixin {
+    add sourceSets.main, 'mixins.' + modid + '.refmap.json'
+//    config 'mixins.' + modid + '.json'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime.
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
+            "Specification-Title": "${modid}",
             "Specification-Vendor": "examplemodsareus",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
+            "Implementation-Version": "${minecraftVersion}",
             "Implementation-Vendor" :"examplemodsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "FMLCorePluginContainsFMLMod": true,
+            "FMLCorePlugin": "${mainPackageName}.mixin.mixinplugin.EarlyMixinLoader"
         ])
-        if (usingMixins.toBoolean()) {
-            attributes["FMLCorePluginContainsFMLMod"] = true
-            attributes["FMLCorePlugin"] = group+".core.MixinLoader"
-        }
-    }
-
-    if (!usingMixins.toBoolean()) {
-        exclude("**/mixins.*.json")
     }
 }
 
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
+jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
 

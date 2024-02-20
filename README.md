@@ -25,4 +25,8 @@ E.g.:
     * Again, you may need to explicitly create the run/mods directory.
 
 Notes:
-* For running the project, you need to use the runClient configuration (the one with a window icon).
+* For running the project, you need to use the runClient configuration (the one with a window icon) from the run configuration dropdown.
+* The mixins in this project need MixinBooter to be loaded in (though other mixin loader/bootstrap mods may also work)
+* Javadocs for the included Mixins library don't work; you'll want to go to the Mixins repo ([https://github.com/SpongePowered/Mixin]), and either look at the source for a given class, or the Wiki if you're new to Mixins
+    - Wiki is at [https://github.com/SpongePowered/Mixin/wiki], and can also be accessed via the Wiki tab in the top row of tabs (same one that has Code, Issues, and Pull Requests)
+* To add a mixin, add the mixin class to mixin/mixinplugin/, then in resources/mixins.modid.json, add the mixin class's name to the "mixins" list if both client and server require it, or to the "client" or "server" lists if only one side needs the mixin.

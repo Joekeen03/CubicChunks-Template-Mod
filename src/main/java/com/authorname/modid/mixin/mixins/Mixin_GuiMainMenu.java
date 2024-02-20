@@ -1,4 +1,4 @@
-package com.authorname.modid.core.mixins;
+package com.authorname.modid.mixin.mixins;
 
 import com.authorname.modid.MainModClass;
 import net.minecraft.client.gui.GuiMainMenu;
